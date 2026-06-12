@@ -44,6 +44,7 @@ _SYSTEM_PROMPT = """\
 - get_revenue: الأرباح والإيرادات للمدير
 - get_top_products: أكثر المنتجات مبيعاً
 - predict_demand: توقع الطلب لمنتج
+- predict_sales_trends: توقع اتجاه المبيعات الأسبوع القادم والمنتجات المتصدرة الشهر القادم
 - low_stock_alert: منتجات قريبة من النفاد
 - product_correlation: الارتباط بين المنتجات
 - manager_insights: رؤى تحليلية شاملة
@@ -82,11 +83,10 @@ class MallStateManager:
             f"{'عميل' if m['role']=='user' else 'مساعد'}: {m['content']}"
             for m in history[-4:]
         ])
-        # Role constraint injected into prompt
         role_constraint = (
             "\n\nتنبيه مهم: المستخدم عميل عادي. لا تستخدم أبداً intent من هذه القائمة: "
             "get_sales_report, get_revenue, get_top_products, predict_demand, "
-            "low_stock_alert, product_correlation, manager_insights, account_summary. "
+            "predict_sales_trends, low_stock_alert, product_correlation, manager_insights, account_summary. "
             "إذا سأل العميل عن المبيعات أو الأرباح → استخدم intent=general_inquiry."
         ) if role == "customer" else ""
         user_content = (

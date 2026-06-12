@@ -275,6 +275,46 @@ def _predict_demand(state: MallConversationState) -> str:
         return f"بيانات '{p['name_ar']}':\n{history_text}"
 
 
+def _predict_sales_trends(_state: MallConversationState) -> str:
+    r7 = get_sales_report(7)
+    r30 = get_sales_report(30)
+    
+    data_text = (
+        f"أداء آخر 7 أيام: إيرادات {r7['total_revenue']:,.0f} جنيه | مبيعات {r7['total_units_sold']} وحدة\n"
+        f"أداء آخر 30 يوم: إيرادات {r30['total_revenue']:,.0f} جنيه | مبيعات {r30['total_units_sold']} وحدة\n\n"
+        f"أفضل المنتجات مؤخراً:\n"
+    )
+    for i, p in enumerate(r30["top_products"][:5], 1):
+        data_text += f"{i}. {p['product_name']} ({p['qty']} وحدة)\n"
+        
+    llm = _get_llm()
+    if not llm:
+        return f"بيانات المبيعات الحالية:\n{data_text}\n\n(محتاج OPENAI_API_KEY عشان التوقعات)"
+        
+    model = os.getenv("LLM_MODEL", "gpt-4o")
+    prompt = (
+        f"أنت محلل بيانات استراتيجي لمول منزلي مصري.\n"
+        f"إليك بيانات المبيعات الأخيرة:\n{data_text}\n\n"
+        f"المطلوب:\n"
+        f"1. توقع اتجاه المبيعات للأسبوع القادم (هل سيرتفع أم ينخفض ولماذا؟).\n"
+        f"2. توقع المنتجات أو الفئات التي ستكون 'تريند' الشهر القادم.\n"
+        f"3. نصيحة تسويقية سريعة.\n"
+        f"اكتب ردك بالعربية المصرية العامية والمهنية."
+    )
+    try:
+        resp = llm.chat.completions.create(
+            model=model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.4,
+            max_tokens=600,
+        )
+        return f"📊 توقعات المبيعات والتريند:\n\n{resp.choices[0].message.content}"
+    except Exception as e:
+        logger.error("Trend Prediction LLM failed: %s", e)
+        return f"بيانات المبيعات الحالية:\n{data_text}"
+
+
+
 def _low_stock(_state: MallConversationState) -> str:
     products = get_low_stock_products(threshold=5)
     if not products:
@@ -384,6 +424,7 @@ _HANDLERS = {
     "get_revenue":       _revenue_analysis,
     "get_top_products":  _top_products,
     "predict_demand":    _predict_demand,
+    "predict_sales_trends": _predict_sales_trends,
     "low_stock_alert":   _low_stock,
     "product_correlation": _product_correlation,
     "manager_insights":  _manager_insights,

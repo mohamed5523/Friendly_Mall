@@ -39,6 +39,7 @@ MANAGER_TOOL_MAP = {
     "get_revenue":         "get_revenue_analysis",
     "get_top_products":    "get_top_selling_products",
     "predict_demand":      "predict_product_demand",
+    "predict_sales_trends": "predict_overall_sales_trends",
     "low_stock_alert":     "get_low_stock_alert",
     "product_correlation": "get_product_correlation_insights",
     "manager_insights":    "get_manager_insights",
