@@ -116,7 +116,8 @@ def normalize_arabic_query(term: str) -> str:
         "لابات": "لابتوب", "لاب": "لابتوب",
         "زرقا": "أزرق", "زرقة": "أزرق", "حمره": "أحمر", "حمرا": "أحمر",
         "خضرا": "أخضر", "خضره": "أخضر", "سوده": "أسود", "سودا": "أسود",
-        "بيضه": "أبيض", "بيضا": "أبيض", "صفره": "أصفر", "صفرا": "أصفر"
+        "بيضه": "أبيض", "بيضا": "أبيض", "صفره": "أصفر", "صفرا": "أصفر",
+        "غرفة": "غرف", "غرفه": "غرف"
     }
     
     words = term.split()
@@ -135,6 +136,43 @@ def normalize_arabic_query(term: str) -> str:
                     break
         normalized.append(w)
     return " ".join(normalized)
+
+def get_category_summary(query: str) -> Optional[Dict]:
+    """
+    Checks if the query matches a category name. If so, returns a summary of sub_categories and their min prices.
+    Returns {"category_name": str, "sub_categories": [{"name": str, "min_price": float}]} or None.
+    """
+    norm_query = normalize_arabic_query(query)
+    if not norm_query:
+        return None
+        
+    cats = get_all_categories()
+    matched_cat = None
+    for c in cats:
+        cat_norm = normalize_arabic_query(c["name_ar"])
+        if cat_norm == norm_query or norm_query in cat_norm:
+            matched_cat = c
+            break
+            
+    if not matched_cat:
+        return None
+        
+    with get_connection() as conn:
+        rows = conn.execute('''
+            SELECT sub_category, MIN(price) as min_price 
+            FROM products 
+            WHERE category_id = ? 
+            GROUP BY sub_category
+            ORDER BY min_price ASC
+        ''', (matched_cat["id"],)).fetchall()
+        
+    if not rows:
+        return None
+        
+    return {
+        "category_name": matched_cat["name_ar"],
+        "sub_categories": [{"name": r["sub_category"], "min_price": r["min_price"]} for r in rows]
+    }
 
 def search_products(query: str, category: Optional[str] = None, limit: int = 10) -> List[Dict]:
     """Full-text search on product names."""

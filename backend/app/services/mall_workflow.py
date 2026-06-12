@@ -11,7 +11,7 @@ from data.mall_database import (
     search_products, get_products_by_category, create_order,
     get_order_status, get_sales_report, get_low_stock_products,
     get_top_products, get_product_sales_history, get_category_correlation,
-    get_account_summary, get_all_categories, init_db,
+    get_account_summary, get_all_categories, init_db, get_category_summary
 )
 from app.core.state_manager import MallConversationState
 from app.core.intent_router import RouteDecision
@@ -46,8 +46,23 @@ def _fmt_product(p: dict) -> str:
 
 # ── Customer handlers ─────────────────────────────────────────────────────
 
+def _handle_category_summary(q: str):
+    summary = get_category_summary(q)
+    if not summary:
+        return None
+    lines = [f"فئة '{summary['category_name']}' بتحتوي على الأقسام دي:"]
+    for s in summary["sub_categories"]:
+        lines.append(f"- {s['name']} (الأسعار بتبدأ من {s['min_price']:,.0f} جنيه)")
+    lines.append("\nحابب تشتري أو تدور في أي قسم فيهم بالظبط؟")
+    return "\n".join(lines)
+
 def _search_products(state: MallConversationState) -> str:
     q = state.entities.product_name or state.last_user_question
+    
+    cat_msg = _handle_category_summary(q)
+    if cat_msg:
+        return cat_msg
+        
     cat = state.entities.category
     results = search_products(q, cat, limit=8)
     if not results:
@@ -82,6 +97,11 @@ def _check_stock(state: MallConversationState) -> str:
 
 def _browse_category(state: MallConversationState) -> str:
     cat = state.entities.category or state.last_user_question
+    
+    cat_msg = _handle_category_summary(cat)
+    if cat_msg:
+        return cat_msg
+        
     results = get_products_by_category(cat, limit=15)
     if not results:
         cats = get_all_categories()
@@ -97,6 +117,10 @@ def _reserve_or_buy(state: MallConversationState, order_type: str) -> str:
     q = state.entities.product_name or ""
     if not q:
         return "محتاج اسم المنتج عشان أكمل. قولي اسمه إيه؟"
+        
+    cat_msg = _handle_category_summary(q)
+    if cat_msg:
+        return cat_msg
     
     results = search_products(q, limit=5)
     if not results:
