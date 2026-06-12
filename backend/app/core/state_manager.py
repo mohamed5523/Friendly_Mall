@@ -18,6 +18,7 @@ class MallEntities(BaseModel):
     order_id: Optional[int] = Field(None, description="رقم الطلب إذا ذُكر")
     budget: Optional[float] = Field(None, description="الميزانية المحددة من العميل")
     time_period: Optional[str] = Field(None, description="الفترة الزمنية للمدير: اليوم/الأسبوع/الشهر")
+    is_confirmed: Optional[bool] = Field(False, description="هل أكد المستخدم عملية الشراء/الحجز صراحة بـ (ايوة/نعم/أكد)؟")
 
 
 class MallConversationState(BaseModel):
@@ -57,6 +58,7 @@ _SYSTEM_PROMPT = """\
 - الأرقام المذكورة للكمية → quantity
 - أرقام الطلبات → order_id
 - إذا قال "الشهر ده" أو "آخر 30 يوم" → time_period=30
+- إذا سأل المساعد "أأكد لحضرتك الشراء؟" وأجاب المستخدم بالموافقة (مثل: اه، توكل على الله، أكد، هشتري) → is_confirmed=true
 
 أجب بـ JSON فقط.
 """

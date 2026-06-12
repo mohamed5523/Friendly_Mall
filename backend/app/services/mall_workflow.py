@@ -97,10 +97,24 @@ def _reserve_or_buy(state: MallConversationState, order_type: str) -> str:
     q = state.entities.product_name or ""
     if not q:
         return "محتاج اسم المنتج عشان أكمل. قولي اسمه إيه؟"
-    results = search_products(q, limit=1)
+    
+    results = search_products(q, limit=5)
     if not results:
         return f"مش لاقي منتج اسمه '{q}'."
+        
+    if len(results) > 1:
+        lines = ["لقينا أكتر من حاجة، زي:"]
+        for p in results:
+            lines.append(f"- {p['name_ar']} بـ {p['price']:,.0f} جنيه")
+        lines.append("حابب تختار أي واحدة فيهم بالظبط؟")
+        return "\n".join(lines)
+        
     p = results[0]
+    
+    if not state.entities.is_confirmed:
+        action_word = "الحجز" if order_type == "حجز" else "الشراء"
+        return f"{p['name_ar']} السعر {p['price']:,.0f} جنيه، أأكد لحضرتك {action_word}؟"
+        
     customer = state.entities.customer_name or "عميل"
     qty = state.entities.quantity or 1
     try:

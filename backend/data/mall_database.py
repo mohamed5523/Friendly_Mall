@@ -113,7 +113,10 @@ def normalize_arabic_query(term: str) -> str:
         "تكييفات": "تكييف", "مكيفات": "مكيف", "بوتاجازات": "بوتاجاز",
         "بتوجاز": "بوتاجاز", "بوتجاز": "بوتاجاز",
         "موبايلات": "موبايل", "غسالات": "غسال", "غسالة": "غسال", "غساله": "غسال",
-        "لابات": "لابتوب", "لاب": "لابتوب"
+        "لابات": "لابتوب", "لاب": "لابتوب",
+        "زرقا": "أزرق", "زرقة": "أزرق", "حمره": "أحمر", "حمرا": "أحمر",
+        "خضرا": "أخضر", "خضره": "أخضر", "سوده": "أسود", "سودا": "أسود",
+        "بيضه": "أبيض", "بيضا": "أبيض", "صفره": "أصفر", "صفرا": "أصفر"
     }
     
     words = term.split()
@@ -136,23 +139,40 @@ def normalize_arabic_query(term: str) -> str:
 def search_products(query: str, category: Optional[str] = None, limit: int = 10) -> List[Dict]:
     """Full-text search on product names."""
     query = normalize_arabic_query(query)
+    words = [w for w in query.split() if w]
+    if not words:
+        return []
+    
     with get_connection() as conn:
+        # Build AND conditions for each word
+        word_conditions = " AND ".join(
+            "(p.name_ar LIKE ? OR p.description_ar LIKE ? OR p.brand LIKE ?)" 
+            for _ in words
+        )
+        # Flatten parameters: for each word we need 3 parameters
+        params = []
+        for w in words:
+            params.extend([f"%{w}%", f"%{w}%", f"%{w}%"])
+            
         if category:
-            rows = conn.execute("""
+            sql = f"""
                 SELECT p.*, c.name_ar as category_name
                 FROM products p JOIN categories c ON p.category_id = c.id
-                WHERE (p.name_ar LIKE ? OR p.description_ar LIKE ? OR p.brand LIKE ?)
+                WHERE {word_conditions}
                   AND c.name_ar LIKE ?
                 LIMIT ?
-            """, (f"%{query}%", f"%{query}%", f"%{query}%", f"%{category}%", limit)).fetchall()
+            """
+            params.extend([f"%{category}%", limit])
         else:
-            rows = conn.execute("""
+            sql = f"""
                 SELECT p.*, c.name_ar as category_name
                 FROM products p JOIN categories c ON p.category_id = c.id
-                WHERE p.name_ar LIKE ? OR p.description_ar LIKE ?
-                   OR p.brand LIKE ? OR c.name_ar LIKE ?
+                WHERE {word_conditions}
                 LIMIT ?
-            """, (f"%{query}%", f"%{query}%", f"%{query}%", f"%{query}%", limit)).fetchall()
+            """
+            params.append(limit)
+            
+        rows = conn.execute(sql, tuple(params)).fetchall()
         return [dict(r) for r in rows]
 
 
