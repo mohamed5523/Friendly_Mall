@@ -20,7 +20,7 @@ const MANAGER_SUGGESTIONS = [
   'منتجات قريبة من النفاد', 'توقع مبيعات الثلاجة', 'رؤى شاملة عن المول',
 ]
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8008'
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 const SESSION_KEY = 'mall_session_id'
 
 function getOrCreateSession(): string {
@@ -92,7 +92,7 @@ export default function ChatPage({ role, onBack }: Props) {
         <div className="chat-header__info">
           <span className="chat-header__icon">{roleIcon}</span>
           <div>
-            <div className="chat-header__title">مول البيت 🏪</div>
+            <div className="chat-header__title">لمعي جراند مول 🏪</div>
             <div className="chat-header__role">دور: {roleLabel}</div>
           </div>
         </div>
@@ -105,7 +105,7 @@ export default function ChatPage({ role, onBack }: Props) {
           <div className="welcome-card">
             <div className="welcome-card__icon">{roleIcon}</div>
             <div className="welcome-card__title">
-              {role === 'customer' ? 'أهلاً بك في مول البيت!' : 'لوحة تحكم المدير'}
+              {role === 'customer' ? 'أهلاً بك في لمعي جراند مول!' : 'لوحة تحكم المدير'}
             </div>
             <div className="welcome-card__text">
               {role === 'customer'

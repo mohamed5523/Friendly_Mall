@@ -6,7 +6,7 @@ from openai import OpenAI, AuthenticationError, APIConnectionError
 
 logger = logging.getLogger(__name__)
 
-MALL_NAME = os.getenv("MALL_NAME", "مول البيت")
+MALL_NAME = os.getenv("MALL_NAME", "لمعي جراند مول")
 _PLACEHOLDER = "your_openai_api_key_here"
 
 _CUSTOMER_SYSTEM = f"""\
@@ -129,7 +129,7 @@ def _wrap_raw(data: str, role: str) -> str:
 def _general_fallback(role: str) -> str:
     if role == "customer":
         return (
-            "أهلاً! أنا مساعد مول البيت.\n"
+            "أهلاً! أنا مساعد لمعي جراند مول.\n"
             "جرب تسألني:\n"
             "• بكام الثلاجة؟\n"
             "• في كنبة متاحة؟\n"

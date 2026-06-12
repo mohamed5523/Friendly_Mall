@@ -147,7 +147,7 @@ async def chat_query(request: ChatRequest,
         else:
             if role == "customer":
                 answer = (
-                    "\u0623\u0647\u0644\u0627\u064b! \u0623\u0646\u0627 \u0645\u0633\u0627\u0639\u062f \u0645\u0648\u0644 \u0627\u0644\u0628\u064a\u062a.\n"
+                    "\u0623\u0647\u0644\u0627\u064b! \u0623\u0646\u0627 \u0645\u0633\u0627\u0639\u062f \u0644\u0645\u0639\u064a \u062c\u0631\u0627\u0646\u062f \u0645\u0648\u0644.\n"
                     "\u0645\u0645\u0643\u0646 \u062a\u0633\u0623\u0644\u0646\u064a \u0639\u0646:\n"
                     "- \u0633\u0639\u0631 \u0623\u064a \u0645\u0646\u062a\u062c (\u0645\u062b\u0627\u0644: \u0628\u0643\u0627\u0645 \u0627\u0644\u062b\u0644\u0627\u062c\u0629\u061f)\n"
                     "- \u062a\u0648\u0627\u0641\u0631 \u0645\u0646\u062a\u062c (\u0645\u062b\u0627\u0644: \u0641\u064a \u0645\u0631\u0627\u0648\u062d \u0645\u062a\u0627\u062d\u0629\u061f)\n"
@@ -181,6 +181,6 @@ async def chat_health():
         "status": "ok",
         "ai_available": llm_ok,
         "api_key_set": bool(key and key != "your_openai_api_key_here"),
-        "mall": os.getenv("MALL_NAME", "\u0645\u0648\u0644 \u0627\u0644\u0628\u064a\u062a"),
+        "mall": os.getenv("MALL_NAME", "\u0644\u0645\u0639\u064a \u062c\u0631\u0627\u0646\u062f \u0645\u0648\u0644"),
         "mode": "llm+db" if llm_ok else "db-only (keyword routing)",
     }

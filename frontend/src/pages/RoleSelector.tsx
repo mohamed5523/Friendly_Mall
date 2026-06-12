@@ -4,7 +4,7 @@ interface Props {
   onSelect: (role: 'customer' | 'manager') => void
 }
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8008'
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
 export default function RoleSelector({ onSelect }: Props) {
   const [email, setEmail] = useState('')
@@ -48,7 +48,7 @@ export default function RoleSelector({ onSelect }: Props) {
   return (
     <div className="role-selector">
       <div className="role-selector__logo">🏪</div>
-      <h1 className="role-selector__title">مول البيت</h1>
+      <h1 className="role-selector__title">لمعي جراند مول</h1>
       <p className="role-selector__subtitle">
         مرحباً بك! تسجيل الدخول للبدء
       </p>

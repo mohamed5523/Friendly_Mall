@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI(
     title="Mall Backend API",
-    description="نظام مول البيت الذكي - Mall MCP System",
+    description="نظام لمعي جراند مول الذكي - Mall MCP System",
     version="1.0.0",
 )
 
@@ -32,7 +32,7 @@ app.include_router(auth_router, prefix="/api/auth", tags=["auth"])
 @app.get("/")
 async def root():
     return {
-        "message": f"مرحباً بك في {os.getenv('MALL_NAME', 'مول البيت')} 🏪",
+        "message": f"مرحباً بك في {os.getenv('MALL_NAME', 'لمعي جراند مول')} 🏪",
         "version": "1.0.0",
         "endpoints": {
             "chat": "/api/chat/query",

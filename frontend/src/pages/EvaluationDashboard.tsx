@@ -16,7 +16,7 @@ import {
 
 /* ── Constants ─────────────────────────────────────────────────────────── */
 
-const API = import.meta.env.VITE_API_URL ?? "http://localhost:8008";
+const API = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 const TABS = ["Overview", "Per-Component", "Interactive Tester", "Dataset"] as const;
 type Tab = typeof TABS[number];
 
@@ -102,7 +102,7 @@ function OverviewTab({ data }: { data: EvalResults }) {
                 </div>
                 {passed !== null && (
                     <span className={`px-4 py-1.5 rounded-full font-semibold text-sm border ${passed ? "bg-emerald-500/20 border-emerald-500/40 text-emerald-300"
-                            : "bg-red-500/20 border-red-500/40 text-red-300"
+                        : "bg-red-500/20 border-red-500/40 text-red-300"
                         }`}>
                         {passed ? "✅ All Passing" : "⚠️ Some Below Threshold"}
                     </span>
@@ -179,8 +179,8 @@ function ComponentTab({ data }: { data: EvalResults }) {
                         id={`comp-btn-${r.component}`}
                         onClick={() => setSelected(r.component)}
                         className={`px-4 py-1.5 rounded-lg text-sm font-medium border transition-all ${selected === r.component
-                                ? "border-indigo-500 bg-indigo-500/20 text-indigo-300"
-                                : "border-slate-700 bg-slate-800/50 text-slate-400 hover:border-slate-500"
+                            ? "border-indigo-500 bg-indigo-500/20 text-indigo-300"
+                            : "border-slate-700 bg-slate-800/50 text-slate-400 hover:border-slate-500"
                             }`}
                     >
                         {r.component}
@@ -481,8 +481,8 @@ export default function EvaluationDashboard() {
                             id={`tab-${tab.toLowerCase().replace(/\s+/g, "-")}`}
                             onClick={() => setActiveTab(tab)}
                             className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${activeTab === tab
-                                    ? "border-indigo-500 text-indigo-400"
-                                    : "border-transparent text-slate-500 hover:text-slate-300"
+                                ? "border-indigo-500 text-indigo-400"
+                                : "border-transparent text-slate-500 hover:text-slate-300"
                                 }`}
                         >
                             {tab}

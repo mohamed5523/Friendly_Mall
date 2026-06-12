@@ -1,4 +1,4 @@
-## كيفية تشغيل نظام مول البيت
+## كيفية تشغيل نظام لمعي جراند مول
 
 ### المتطلبات
 - Python 3.11+
@@ -13,7 +13,7 @@
 ```
 OPENAI_API_KEY=sk-proj-xxxxxxx
 LLM_MODEL=gpt-4o
-MALL_NAME=مول البيت
+MALL_NAME=لمعي جراند مول
 MCP_BASE_URL=http://localhost:8001
 ```
 
