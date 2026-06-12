@@ -36,7 +36,7 @@ __pycache__/
 *.pyzwzwz
 *.pyzwzwzw
 *.pyzwzwzwz     
-data/
+data/*.db
 deploy_venv/
 playground/
 **/__pycache__/
